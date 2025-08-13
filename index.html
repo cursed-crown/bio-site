@@ -283,42 +283,38 @@
         </div>
         
         <!-- music player -->
-        <div class="music-player">
-            <div class="song-info">
-                <div class="title">Song Title</div>
-                <div class="artist">Artist Name</div>
-            </div>
-            
-            <div class="progress-container">
-                <div class="progress"></div>
-            </div>
-            
-            <div class="timer">
-                <span class="current-time">0:00</span>
-                <span class="duration">0:00</span>
-            </div>
-            
-            <div class="controls">
-                <button class="btn prev-btn">
-                    <i class="fas fa-step-backward"></i>
-                </button>
-                <button class="btn play-btn">
-                    <i class="fas fa-play"></i>
-                </button>
-                <button class="btn next-btn">
-                    <i class="fas fa-step-forward"></i>
-                </button>
-            </div>
-            
-            <div class="music-list">
-                <!-- songs will be added automatically -->
-            </div>
+    <!-- Music Player -->
+    <div class="music-player">
+        <div class="song-info">
+            <div class="title">no song selected</div>
+            <div class="artist">-</div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress"></div>
+        </div>
+        
+        <div class="timer">
+            <span class="current-time">0:00</span>
+            <span class="duration">0:00</span>
+        </div>
+        
+        <div class="controls">
+            <button class="btn prev-btn" aria-label="Previous song">
+                <i class="fas fa-step-backward"></i>
+            </button>
+            <button class="btn play-btn" aria-label="Play/pause">
+                <i class="fas fa-play"></i>
+            </button>
+            <button class="btn next-btn" aria-label="Next song">
+                <i class="fas fa-step-forward"></i>
+            </button>
+        </div>
         </div>
     </div>
-
     <script>
-        // based on github.com/codewithsadee/music-player
         document.addEventListener('DOMContentLoaded', function() {
+            // based on github.com/codewithsadee/music-player
             const musicPlayer = document.querySelector('.music-player');
             const playBtn = musicPlayer.querySelector('.play-btn');
             const prevBtn = musicPlayer.querySelector('.prev-btn');
@@ -330,6 +326,18 @@
             const titleEl = musicPlayer.querySelector('.title');
             const artistEl = musicPlayer.querySelector('.artist');
             const musicList = musicPlayer.querySelector('.music-list');
+            
+            
+            const audioContext = window.AudioContext || window.webkitAudioContext;
+            let audioCtx;
+            try {
+                audioCtx = new audioContext();
+            } catch (e) {
+                console.warn("Web Audio API not supported");
+            }
+            
+            
+            let autoplayAllowed = false;
             
             
             const songs = [
@@ -356,6 +364,7 @@
                 renderSongList();
                 loadSong(currentSongIndex);
                 
+                
                 playBtn.addEventListener('click', togglePlay);
                 prevBtn.addEventListener('click', prevSong);
                 nextBtn.addEventListener('click', nextSong);
@@ -363,20 +372,50 @@
                 audio.addEventListener('ended', nextSong);
                 audio.addEventListener('loadedmetadata', updateDuration);
                 progressContainer.addEventListener('click', setProgress);
+                
+                
+                document.body.addEventListener('click', function enableAutoplay() {
+                    if (!autoplayAllowed) {
+                        autoplayAllowed = true;
+                        document.body.removeEventListener('click', enableAutoplay);
+                    }
+                }, { once: true });
             }
+            
             
             function loadSong(index) {
                 const song = songs[index];
                 titleEl.textContent = song.title;
                 artistEl.textContent = song.artist;
-                audio.src = song.src;
+                durationEl.textContent = song.duration;
                 
-                const songElements = musicList.querySelectorAll('.song');
-                if (songElements.length > 0) {
-                    songElements.forEach(songEl => songEl.classList.remove('active'));
-                    songElements[index].classList.add('active');
+                
+                audio.pause();
+                audio.src = '';
+                audio.load();
+                
+                
+                audio.src = song.src;
+                audio.load();
+                
+                
+                updateActiveSong(index);
+                
+                о
+                if (autoplayAllowed && isPlaying) {
+                    audio.play().catch(e => console.warn("Autoplay prevented:", e));
                 }
             }
+            
+            
+            function updateActiveSong(index) {
+                const songElements = musicList.querySelectorAll('.song');
+                songElements.forEach((el, i) => {
+                    el.classList.toggle('active', i === index);
+                });
+            }
+            
+            
             function togglePlay() {
                 if (isPlaying) {
                     pauseSong();
@@ -386,60 +425,57 @@
             }
             
             function playSong() {
-                isPlaying = true;
-                playBtn.querySelector('i').classList.replace('fa-play', 'fa-pause');
-                audio.play();
+                audio.play()
+                    .then(() => {
+                        isPlaying = true;
+                        playBtn.querySelector('i').classList.replace('fa-play', 'fa-pause');
+                        playBtn.setAttribute('aria-label', 'Pause');
+                    })
+                    .catch(e => {
+                        console.error("Playback failed:", e);
+                        if (e.name === 'NotAllowedError') {
+                            alert("Please click anywhere on the page to enable audio playback");
+                        }
+                    });
             }
             
             function pauseSong() {
+                audio.pause();
                 isPlaying = false;
                 playBtn.querySelector('i').classList.replace('fa-pause', 'fa-play');
-                audio.pause();
+                playBtn.setAttribute('aria-label', 'Play');
             }
             
             
             function prevSong() {
-                currentSongIndex--;
-                if (currentSongIndex < 0) {
-                    currentSongIndex = songs.length - 1;
-                }
+                currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
                 loadSong(currentSongIndex);
                 if (isPlaying) playSong();
             }
-            
             
             function nextSong() {
-                currentSongIndex++;
-                if (currentSongIndex > songs.length - 1) {
-                    currentSongIndex = 0;
-                }
+                currentSongIndex = (currentSongIndex + 1) % songs.length;
                 loadSong(currentSongIndex);
                 if (isPlaying) playSong();
             }
             
             
-            function updateProgress(e) {
-                const { duration, currentTime } = e.srcElement;
-                const progressPercent = (currentTime / duration) * 100;
+            function updateProgress() {
+                const { duration, currentTime } = audio;
+                const progressPercent = (currentTime / duration) * 100 || 0;
                 progress.style.width = `${progressPercent}%`;
                 
                 
-                const currentMinutes = Math.floor(currentTime / 60);
-                let currentSeconds = Math.floor(currentTime % 60);
-                if (currentSeconds < 10) {
-                    currentSeconds = `0${currentSeconds}`;
+                currentTimeEl.textContent = formatTime(currentTime);
+                if (duration) {
+                    durationEl.textContent = formatTime(duration);
                 }
-                currentTimeEl.textContent = `${currentMinutes}:${currentSeconds}`;
             }
             
-            
-            function updateDuration() {
-                const durationMinutes = Math.floor(audio.duration / 60);
-                let durationSeconds = Math.floor(audio.duration % 60);
-                if (durationSeconds < 10) {
-                    durationSeconds = `0${durationSeconds}`;
-                }
-                durationEl.textContent = `${durationMinutes}:${durationSeconds}`;
+            function formatTime(seconds) {
+                const minutes = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
             }
             
             
@@ -460,11 +496,12 @@
                     if (index === currentSongIndex) songEl.classList.add('active');
                     
                     songEl.innerHTML = `
-                        <img src="${song.img}" alt="${song.title}" class="img">
+                        <img src="${song.img}" alt="${song.title}" class="img" loading="lazy">
                         <div class="info">
                             <div class="title">${song.title}</div>
                             <div class="artist">${song.artist}</div>
                         </div>
+                        <div class="duration">${song.duration}</div>
                     `;
                     
                     songEl.addEventListener('click', () => {
@@ -476,7 +513,6 @@
                     musicList.appendChild(songEl);
                 });
             }
-            
             initPlayer();
         });
     </script>
