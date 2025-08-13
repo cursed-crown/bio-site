@@ -1,5 +1,6 @@
 
 # demo of bio
+(size is too big, wait for loading or just go to https://cursed-crown.github.io/bio-site/)
 ![demo](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExejlrOTNwODc1cDc3ZXRoc3Vyc3lhbWhrdjBuZG5iZ3hzcHc3Y2x5cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/K9HMV5P1AQutnJw8se/giphy.gif)
 
 # guide
