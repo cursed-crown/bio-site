@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cursed.crown</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-image: url('https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExbXlvbHozOTA2MjE1b3p2Mjhjem12NXZudXhuaWttenBsZ3lqMnJuNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RlwF2vFb4y7bDnWvcO/giphy.gif?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #fff;
+            margin-bottom: 15px;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        
+        .description {
+            font-size: 16px;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+        
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .btn i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .music-player {
+            margin-top: 25px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .btn {
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2tnaGpiYjZmMTRkemZ2c2Judng3emdyeTFtcXlzMXpqZHFtbGh0dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/h5NLPVn3rg0Rq/giphy.gif" alt="Avatar" class="avatar">
+        <h1>cursed.crown</h1>
+        <p class="description">python dev, technical admin</p>
+        
+        <div class="links">
+            <a href="https://t.me/convulsed_seizures" class="btn">
+                <i class="fab fa-telegram"></i> telegram
+            </a>
+            <a href="https://steamcommunity.com/id/curseddotcrown/" class="btn">
+                <i class="fab fa-steam"></i> steam
+            </a>
+        </div>
+        
+        <div class="music-player">
+            <audio controls autoplay loop >
+                <source src="https://dl1.mp3party.net/online/10841783.mp3" type="audio/mpeg">
+                your browser doesnot allowing audio.
+            </audio>
+            <p style="margin-top: 5px; font-size: 14px; opacity: 0.8;">zxcursed - cvrsxdcrown</p>
+        </div>
+    </div>
+</body>
+</html>
